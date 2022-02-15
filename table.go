@@ -29,6 +29,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"regexp"
 	"strings"
 	"unicode/utf8"
 )
@@ -275,6 +276,11 @@ func (t *table) applyWidths(row []string, widths []int) []interface{} {
 }
 
 func (t *table) lenOffset(s string, w int) string {
+	// Remove any ANSI code first...
+	const ansi = "[\u001B\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?\u0007)|(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry=><~]))"
+	var re = regexp.MustCompile(ansi)
+	s = re.ReplaceAllString(s, "")
+
 	l := w - t.Width(s)
 	if l <= 0 {
 		return ""
