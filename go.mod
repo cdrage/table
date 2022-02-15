@@ -1,4 +1,4 @@
-module table
+module github.com/cdrage/table
 
 go 1.17
 
